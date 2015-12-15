@@ -1,0 +1,27 @@
+#hostname 和 hosts 配置;
+sed -i 's/^HOSTNAME=.*/HOSTNAME=$hname/g' /etc/sysconfig/network;
+sysctl kernel.hostname=$hname; 
+echo -e '$hoststr' >> /etc/hosts;
+
+#java install;
+if [ ! -d $javahome ]; then rm -rf $hdhome/java/*; mkdir -p $hdhome/java; tar zxf $hdhome/jdk* -C $hdhome/java; fi;
+echo '' >> ~/.bashrc;
+echo 'export JAVA_HOME=$hdhome/java/jdk1.7.0_21' >> ~/.bashrc;
+echo 'export JRE_HOME=$JAVA_HOME/jre' >> ~/.bashrc;
+echo 'export PATH=$JAVA_HOME/bin:$JRE_HOME/bin:$PATH' >> ~/.bashrc;
+echo 'export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar' >> ~/.bashrc;
+
+#hadoop 配置;
+rm -rf $hdhome/hadoop-2*/*;
+tar zxf $hdhome/hadoop-2*.tar.gz -C $hdhome/ ;
+sed -i 's/^export JAVA_HOME=.*/export JAVA_HOME=$jhreplace/' $hdhome/hadoop-2*/etc/hadoop/hadoop-env.sh; 
+echo 'export HADOOP_HOME=$hdhome/hadoop-2.6.0' >> ~/.bashrc; 
+echo 'export PATH=$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$PATH' >> ~/.bashrc;
+mkdir -p $hddatahome/dfs;
+mkdir -p $hddatahome/edits;
+mkdir -p $hddatahome/nmdata;
+mkdir -p $hddatahome/storage;
+source ~/.bashrc;
+
+#zookeeper;
+#if [[ "$zookeeper" =~ "$hname" ]]; then rm -rf ~/zookeeper*/*; tar zxf ~/zookeeper* -C ~ ; mkdir -p ${hddatahome}/storage/zookeeper/; echo '$zkidx' > ${hddatahome}/storage/zookeeper/myid; fi;
